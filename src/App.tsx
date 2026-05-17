@@ -20,37 +20,44 @@ import {
 } from 'lucide-react';
 
 const PHOTOS = [
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619885/foto1_i3ftiq.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619886/foto2_zw5y2d.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619897/foto3_lb3fhr.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619914/foto4_nsx0sm.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619929/foto5_nvduvv.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619936/foto7_wubv4o.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619937/foto8_sntkaq.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619897/foto28_tp9i71.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto11_hl6mqd.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto12_yrhhkp.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto13_p7kydj.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto15_w3xsnm.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619887/foto19_zn9oxc.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619913/foto38_qngn3j.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619915/foto41_phzjde.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619920/foto42_la9qwp.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619921/foto43_kcfq2e.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619923/foto46_jvrx6b.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619924/foto47_dbkpqz.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619930/foto52_cvenmq.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619908/foto34_errnoe.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619908/foto35_nfvzkq.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619909/foto36_ncdamp.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto10_j7kkzs.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619885/foto1_i3ftiq.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619886/foto2_zw5y2d.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619897/foto3_lb3fhr.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619914/foto4_nsx0sm.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619929/foto5_nvduvv.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619936/foto7_wubv4o.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619937/foto8_sntkaq.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619897/foto28_tp9i71.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto11_hl6mqd.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto12_yrhhkp.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto13_p7kydj.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto15_w3xsnm.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619887/foto19_zn9oxc.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619913/foto38_qngn3j.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619915/foto41_phzjde.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619920/foto42_la9qwp.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619921/foto43_kcfq2e.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619923/foto46_jvrx6b.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619924/foto47_dbkpqz.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619930/foto52_cvenmq.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619908/foto34_errnoe.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619908/foto35_nfvzkq.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619909/foto36_ncdamp.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto10_j7kkzs.jpg",
 ];
 
 const VIDEOS = [
-  "https://res.cloudinary.com/dlzivwcxc/video/upload/f_auto,q_auto/v1778620808/bg_ourtb1.mp4"
+  "https://res.cloudinary.com/dlzivwcxc/video/upload/v1778620808/bg_ourtb1.mp4"
 ];
 
 const SONG_URL = "https://res.cloudinary.com/dlzivwcxc/video/upload/v1778621312/lagu3_szjdw0.mp3";
+
+// Helper for dynamic Cloudinary image resizing
+const optimizeCloudinary = (url: string, width = 800) => {
+  if (!url.includes('cloudinary.com')) return url;
+  if (url.includes('/video/upload/')) return url.replace('/video/upload/', `/video/upload/f_auto,q_auto,w_${width}/`);
+  return url.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${width}/`);
+};
 
 // Helper to extract a nice title from a Cloudinary URL
 const getTitleFromUrl = (url: string) => {
@@ -163,7 +170,7 @@ const VideoGridThumbnail = ({ photo, theme }: { photo: any, theme: 'dark' | 'lig
     >
       <video 
         ref={videoRef}
-        src={photo.url} 
+        src={optimizeCloudinary(photo.url, 480)} 
         className={`w-full h-full object-cover transition-all duration-700 ${isPlaying ? 'scale-110 opacity-100' : 'scale-100 opacity-60'}`}
         muted
         loop
@@ -852,7 +859,7 @@ export default function App() {
                 >
                   {photo.type === 'photo' ? (
                     <motion.img 
-                      src={photo.url} 
+                      src={optimizeCloudinary(photo.url, 600)} 
                       alt={photo.title}
                       loading="lazy"
                       animate={{ 
@@ -1001,12 +1008,11 @@ export default function App() {
             className="fixed inset-0 z-[60] flex flex-col bg-black overflow-hidden"
           >
             {/* Ambient Background Glow (Simplified for performance) */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-              <motion.img 
-                src={selectedPhoto.url} 
-                className="w-full h-full object-cover blur-[60px]"
-                style={{ transform: 'scale(1.2)' }}
-                referrerPolicy="no-referrer"
+            <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+              <img 
+                src={optimizeCloudinary(selectedPhoto.url, 400)} 
+                className="w-full h-full object-cover blur-[40px]"
+                style={{ transform: 'scale(1.1)' }}
               />
             </div>
 
@@ -1046,7 +1052,7 @@ export default function App() {
                 {selectedPhoto.type === 'photo' ? (
                   <motion.img 
                     layoutId={selectedPhoto.id.toString()}
-                    src={selectedPhoto.url} 
+                    src={optimizeCloudinary(selectedPhoto.url, 1280)} 
                     alt={selectedPhoto.title}
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
