@@ -12,7 +12,11 @@ import {
   Share2,
   Info,
   Download,
-  Menu
+  Menu,
+  Languages,
+  Moon,
+  Sun,
+  ArrowUpDown
 } from 'lucide-react';
 
 const PHOTOS = [
@@ -70,7 +74,8 @@ const PHOTO_DATA = [
       title: getTitleFromUrl(url),
       rawName,
       type: 'photo' as const,
-      category: index % 2 === 0 ? 'Vacation' : 'Moments'
+      category: index % 2 === 0 ? 'Vacation' : 'Moments',
+      date: new Date(2025, 0, index + 1).toISOString()
     };
   }),
   ...VIDEOS.map((url, index) => {
@@ -80,10 +85,41 @@ const PHOTO_DATA = [
       title: "BoboiBoy Video " + (index + 1),
       rawName: "video" + (index + 1),
       type: 'video' as const,
-      category: 'Moments'
+      category: 'Moments',
+      date: new Date(2025, 1, index + 1).toISOString()
     };
   })
 ];
+
+const T = {
+  all: "All Media",
+  photos: "Photos",
+  videos: "Videos",
+  favorites: "Favorites",
+  search: "Search by title or moment...",
+  clear: "Clear",
+  history: "Search History",
+  welcomeTitle: "Exclusive Album Gallery",
+  welcomeSubtitle: "A special album gallery to remember memories of being together and to relive the best moments.",
+  explore: "Explore Now",
+  aboutTitle: "About This Archive",
+  aboutPara1: "This is a special album gallery to remember memories of being together and to relive the best moments.",
+  aboutPara2: "Crafted with dedication for fans worldwide.",
+  terms: "Terms of Use",
+  privacy: "Privacy",
+  theme: "Theme",
+  sorting: "Sorting",
+  newest: "Newest",
+  oldest: "Oldest",
+  light: "Light",
+  dark: "Dark",
+  download: "Download",
+  share: "Share",
+  close: "Close",
+  noResults: "No media found",
+  nowPlaying: "Playing Now",
+  save: "SAVE MEDIA"
+};
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -98,12 +134,16 @@ export default function App() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showAbout, setShowAbout] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('boiboy_theme');
+    return (saved as 'dark' | 'light') || 'dark';
+  });
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
   const [likedIds, setLikedIds] = useState<number[]>(() => {
     const saved = localStorage.getItem('boiboy_likes');
     return saved ? JSON.parse(saved) : [];
   });
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
   useEffect(() => {
     localStorage.setItem('boiboy_likes', JSON.stringify(likedIds));
   }, [likedIds]);
@@ -111,6 +151,15 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('boiboy_search_history', JSON.stringify(searchHistory));
   }, [searchHistory]);
+
+  useEffect(() => {
+    localStorage.setItem('boiboy_theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   // Add to search history logic
   useEffect(() => {
@@ -157,24 +206,30 @@ export default function App() {
 
   // Handle automatic music pausing when video is active
   useEffect(() => {
-    if (audioRef.current) {
-      if (selectedPhoto?.type === 'video') {
-        audioRef.current.pause();
-      } else if (isPlaying && !showWelcome) {
-        audioRef.current.play().catch(e => console.log("Audio play deferred:", e));
+    if (!audioRef.current) return;
+
+    if (selectedPhoto?.type === 'video') {
+      audioRef.current.pause();
+    } else if (isPlaying && !showWelcome) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => console.log("Audio play deferred or interrupted:", e));
       }
     }
   }, [selectedPhoto, isPlaying, showWelcome]);
 
   const handleVideoEnd = () => {
-    if (isPlaying && audioRef.current) {
-      audioRef.current.play();
+    if (isPlaying && audioRef.current && selectedPhoto?.type === 'video') {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => console.log("Audio resume after video failed:", e));
+      }
     }
   };
 
   const filteredPhotos = useMemo(() => {
     const term = searchTerm.toLowerCase().replace(/\s+/g, '');
-    return PHOTO_DATA.filter(photo => {
+    let filtered = PHOTO_DATA.filter(photo => {
       const matchesSearch = photo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            photo.rawName.toLowerCase().includes(term) ||
                            photo.category.toLowerCase().includes(searchTerm.toLowerCase());
@@ -187,7 +242,15 @@ export default function App() {
       
       return matchesSearch && matchesFilter;
     });
-  }, [searchTerm, activeFilter]);
+
+    if (sortBy === 'newest') {
+      filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    } else {
+      filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    }
+
+    return filtered;
+  }, [searchTerm, activeFilter, likedIds, sortBy]);
 
   const [loadingId, setLoadingId] = useState<number | null>(null);
 
@@ -227,9 +290,32 @@ export default function App() {
     }
   };
 
-  const handleShareWhatsApp = (title: string) => {
-    const message = `Check out this memory from BoboiBoy MEMORIES: ${title} ✨\n\nView the full collection here: ${window.location.href}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  const handleShare = async (photo: typeof PHOTO_DATA[0]) => {
+    const shareData = {
+      title: photo.title,
+      text: `Check out this memory from BoboiBoy MEMORIES: ${photo.title} ✨`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          return; // User canceled, do nothing
+        }
+        console.error("Share failed", err);
+      }
+    }
+
+    // Fallback: Copy to clipboard
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard!");
+    } catch (err) {
+      console.error("Clipboard fallback failed", err);
+    }
   };
 
   const togglePlay = () => {
@@ -244,7 +330,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] font-sans text-gray-900 pb-32 overflow-hidden relative">
+    <div className={`min-h-screen transition-colors duration-500 ${theme === 'dark' ? 'bg-[#050505] text-white' : 'bg-[#fafafa] text-gray-900'} font-sans pb-32 overflow-hidden relative`}>
       <AnimatePresence>
         {isLoading && (
           <motion.div
@@ -283,7 +369,7 @@ export default function App() {
                 </div>
                 
                 <h2 className="text-3xl font-black text-white tracking-[0.2em] uppercase italic">
-                  Loading BoboiBoy
+                  Loading Moments
                 </h2>
                 <div className="flex justify-center gap-2 mt-4">
                   {[...Array(3)].map((_, i) => (
@@ -380,21 +466,33 @@ export default function App() {
             <motion.div 
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"
+              className={`rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center ${theme === 'dark' ? 'bg-[#111] text-white border border-white/5' : 'bg-white text-gray-900 border border-gray-100'}`}
             >
-              <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className={`w-16 h-16 ${theme === 'dark' ? 'bg-white/5 text-blue-400' : 'bg-blue-50 text-blue-500'} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
                 <Info size={32} />
               </div>
-              <h2 className="text-xl font-bold mb-2">Welcome to Your Album</h2>
-              <p className="text-gray-500 text-sm mb-8 leading-relaxed">
-                To download any photo, simply click to expand it, then right-click and select "Save image as..." 
-              </p>
-              <button 
-                onClick={handleStartApp}
-                className="w-full bg-black text-white py-4 rounded-2xl font-medium hover:bg-gray-800 transition-colors active:scale-95"
-              >
-                Close
-              </button>
+                <motion.h1 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-2xl font-black uppercase tracking-tighter mb-4"
+                >
+                  {T.welcomeTitle}
+                </motion.h1>
+                <motion.p 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className={`text-xs md:text-sm font-medium leading-relaxed max-w-md mx-auto mb-12 ${theme === 'dark' ? 'text-white/60' : 'text-gray-500'}`}
+                >
+                  {T.welcomeSubtitle}
+                </motion.p>
+                <motion.button 
+                  onClick={handleStartApp}
+                  className={`px-10 py-5 rounded-full font-black uppercase tracking-widest text-xs shadow-xl transition-all active:scale-95 ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-black text-white hover:bg-gray-800'}`}
+                >
+                  {T.explore}
+                </motion.button>
             </motion.div>
           </motion.div>
         )}
@@ -412,45 +510,91 @@ export default function App() {
             <motion.div 
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative"
+              className={`rounded-3xl p-8 max-w-md w-full shadow-2xl relative border ${theme === 'dark' ? 'bg-[#111] border-white/5' : 'bg-white border-gray-100'}`}
             >
               <button 
                 onClick={() => setShowAbout(false)}
-                className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-gray-100'}`}
               >
-                <X size={20} className="text-gray-400" />
+                <X size={20} className={theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} />
               </button>
 
               <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Heart size={32} fill="white" />
+                <div className={`w-16 h-16 ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
+                  <Heart size={32} fill={theme === 'dark' ? 'black' : 'white'} />
                 </div>
-                <h2 className="text-2xl font-black italic tracking-tight">About BoboiBoy MEMORIES</h2>
+                <h2 className={`text-2xl font-black italic tracking-tight ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{T.aboutTitle}</h2>
                 <p className="text-gray-400 text-xs mt-1 uppercase tracking-widest">Version 1.0.4</p>
               </div>
 
-              <div className="space-y-4">
-                <div className="p-4 bg-gray-50 rounded-2xl text-sm text-gray-600 leading-relaxed">
-                  BoboiBoy MEMORIES is a premium digital gallery experience designed to showcase high-quality imagery with a refined, interactive interface. 
+              <div className="space-y-6">
+                <div className={`p-4 ${theme === 'dark' ? 'bg-white/5 text-gray-400' : 'bg-gray-50 text-gray-600'} rounded-2xl text-sm leading-relaxed`}>
+                  {T.aboutPara1} 
                 </div>
                 
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group">
-                    <span className="text-sm font-medium">Terms of Use</span>
-                    <Share2 size={16} className="text-gray-300 group-hover:text-black transition-colors" />
+                <div className="space-y-3">
+                  {/* Sorting Toggle */}
+                  <div className={`flex items-center justify-between p-3 rounded-2xl ${theme === 'dark' ? 'bg-white/5' : 'bg-gray-100'}`}>
+                    <div className="flex items-center gap-3">
+                      <ArrowUpDown size={18} className="opacity-50" />
+                      <span className={`text-[10px] font-black uppercase tracking-wider ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{T.sorting}</span>
+                    </div>
+                    <div className={`flex ${theme === 'dark' ? 'bg-black/40' : 'bg-black/5'} rounded-lg p-1`}>
+                      <button 
+                        onClick={() => setSortBy('newest')}
+                        className={`px-3 py-1 rounded-md text-[10px] font-black uppercase transition-all ${sortBy === 'newest' ? (theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white') : 'text-gray-500'}`}
+                      >
+                        {T.newest}
+                      </button>
+                      <button 
+                        onClick={() => setSortBy('oldest')}
+                        className={`px-3 py-1 rounded-md text-[10px] font-black uppercase transition-all ${sortBy === 'oldest' ? (theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white') : 'text-gray-500'}`}
+                      >
+                        {T.oldest}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group">
-                    <span className="text-sm font-medium">Privacy Policy</span>
-                    <Share2 size={16} className="text-gray-300 group-hover:text-black transition-colors" />
+
+                  {/* Theme Toggle */}
+                  <div className={`flex items-center justify-between p-3 rounded-2xl ${theme === 'dark' ? 'bg-white/5' : 'bg-gray-100'}`}>
+                    <div className="flex items-center gap-3">
+                      {theme === 'dark' ? <Moon size={18} className="opacity-50" /> : <Sun size={18} className="opacity-50" />}
+                      <span className={`text-[10px] font-black uppercase tracking-wider ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{T.theme}</span>
+                    </div>
+                    <div className={`flex ${theme === 'dark' ? 'bg-black/40' : 'bg-black/5'} rounded-lg p-1`}>
+                      <button 
+                        onClick={() => setTheme('dark')}
+                        className={`px-3 py-1 rounded-md text-[10px] font-black uppercase transition-all ${theme === 'dark' ? (theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white') : 'text-gray-500'}`}
+                      >
+                        {T.dark}
+                      </button>
+                      <button 
+                        onClick={() => setTheme('light')}
+                        className={`px-3 py-1 rounded-md text-[10px] font-black uppercase transition-all ${theme === 'light' ? (theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white') : 'text-gray-500'}`}
+                      >
+                        {T.light}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col gap-2 pt-4">
+                  <div className={`flex justify-between items-center p-3 ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-gray-50'} rounded-xl transition-colors cursor-pointer group`}>
+                    <span className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{T.terms}</span>
+                    <Share2 size={16} className="text-gray-300 group-hover:text-current transition-colors" />
+                  </div>
+                  <div className={`flex justify-between items-center p-3 ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-gray-50'} rounded-xl transition-colors cursor-pointer group`}>
+                    <span className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{T.privacy}</span>
+                    <Share2 size={16} className="text-gray-300 group-hover:text-current transition-colors" />
                   </div>
                 </div>
               </div>
 
               <button 
                 onClick={() => setShowAbout(false)}
-                className="w-full mt-8 bg-gray-100 text-gray-900 py-4 rounded-2xl font-bold hover:bg-gray-200 transition-colors active:scale-95"
+                className={`w-full mt-8 ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'} py-4 rounded-2xl font-bold transition-colors active:scale-95`}
               >
-                Close Menu
+                {T.close}
               </button>
             </motion.div>
           </motion.div>
@@ -458,29 +602,18 @@ export default function App() {
       </AnimatePresence>
 
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4">
+      <header className={`sticky top-0 z-50 transition-colors duration-500 ${theme === 'dark' ? 'bg-[#050505]/80' : 'bg-white/80'} backdrop-blur-md border-b ${theme === 'dark' ? 'border-white/5' : 'border-gray-100'} px-6 py-4`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="relative">
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3],
-                x: [-10, 10, -10],
-                y: [-5, 5, -5],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="absolute -inset-4 bg-blue-400/30 blur-2xl rounded-full z-0 pointer-events-none"
-            />
+          <div className="flex items-center gap-4">
+            <div className={`w-10 h-10 ${theme === 'dark' ? 'bg-white' : 'bg-black'} rounded-2xl flex items-center justify-center shadow-lg`}>
+              <Heart size={20} className={theme === 'dark' ? 'text-black' : 'text-white'} fill={theme === 'dark' ? 'black' : 'white'} />
+            </div>
             <motion.h1 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative z-10 text-2xl font-black tracking-tighter bg-gradient-to-r from-gray-900 via-blue-600 to-gray-900 bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(37,99,235,0.4)]"
+              className={`text-2xl font-black tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}
             >
-              BoboiBoy MEMORIES
+              BoboiBoy <span className="text-blue-500">MEMORIES</span>
             </motion.h1>
           </div>
 
@@ -489,15 +622,15 @@ export default function App() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input 
                 type="text"
-                placeholder="Search by title or moment..."
+                placeholder={T.search}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-gray-100/50 border-none rounded-full py-2 pl-10 pr-4 focus:ring-2 focus:ring-black/5 transition-all text-sm outline-none"
+                className={`w-full ${theme === 'dark' ? 'bg-white/5 text-white' : 'bg-gray-100/50'} border-none rounded-full py-2 pl-10 pr-4 focus:ring-2 focus:ring-black/5 transition-all text-sm outline-none`}
               />
               {searchTerm && (
                 <button 
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+                  className={`absolute right-3 top-1/2 -translate-y-1/2 transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-400 hover:text-black'}`}
                 >
                   <X size={14} />
                 </button>
@@ -520,7 +653,7 @@ export default function App() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: i * 0.05 }}
                       onClick={() => setSearchTerm(term)}
-                      className="text-[10px] bg-white border border-gray-100 px-3 py-1 rounded-full text-gray-500 hover:bg-gray-50 hover:text-black transition-all shadow-sm flex items-center gap-1 font-medium"
+                      className={`text-[10px] ${theme === 'dark' ? 'bg-white/5 border-white/10 text-gray-400 hover:text-white' : 'bg-white border-gray-100 text-gray-500 hover:text-black'} px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1 font-medium`}
                     >
                       <Search size={10} className="opacity-50" />
                       {term}
@@ -528,9 +661,9 @@ export default function App() {
                   ))}
                   <button 
                     onClick={() => setSearchHistory([])}
-                    className="text-[8px] uppercase tracking-widest text-gray-300 hover:text-rose-500 transition-colors font-black ml-auto"
+                    className="text-[8px] uppercase tracking-widest text-gray-300 hover:text-rose-500 transition-colors font-black ml-auto bg-transparent border-none cursor-pointer"
                   >
-                    Clear
+                    {T.clear}
                   </button>
                 </motion.div>
               )}
@@ -541,16 +674,16 @@ export default function App() {
             <div className="md:hidden">
               <button 
                 onClick={() => setSearchTerm(searchTerm === '' ? ' ' : '')} 
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className={`p-2 rounded-full transition-colors ${theme === 'dark' ? 'hover:bg-white/5 text-white' : 'hover:bg-gray-100 text-gray-600'}`}
               >
-                <Search size={20} className="text-gray-600" />
+                <Search size={20} />
               </button>
             </div>
             <button 
               onClick={() => setShowAbout(true)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className={`p-2 rounded-full transition-colors ${theme === 'dark' ? 'hover:bg-white/5 text-white' : 'hover:bg-gray-100 text-gray-900'}`}
             >
-              <Menu size={24} className="text-gray-900" />
+              <Menu size={24} />
             </button>
           </div>
         </div>
@@ -570,7 +703,7 @@ export default function App() {
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-gray-100/50 border-none rounded-full py-2 pl-10 pr-4 focus:ring-2 focus:ring-black/5 transition-all text-sm outline-none"
+                className={`w-full border-none rounded-full py-2 pl-10 pr-4 focus:ring-2 focus:ring-black/5 transition-all text-sm outline-none ${theme === 'dark' ? 'bg-white/5 text-white' : 'bg-gray-100/50 text-gray-900'}`}
               />
               <button 
                  onClick={() => setSearchTerm('')}
@@ -592,7 +725,7 @@ export default function App() {
                     <button
                       key={term}
                       onClick={() => setSearchTerm(term)}
-                      className="text-[10px] bg-white border border-gray-100 px-3 py-1.5 rounded-full text-gray-500 font-medium flex items-center gap-1 active:bg-gray-50 shadow-sm"
+                      className={`text-[10px] ${theme === 'dark' ? 'bg-white/5 border-white/10 text-gray-400 active:bg-white/10' : 'bg-white border-gray-100 text-gray-500 active:bg-gray-50'} border px-3 py-1.5 rounded-full font-medium flex items-center gap-1 shadow-sm`}
                     >
                       <Search size={10} />
                       {term}
@@ -605,23 +738,22 @@ export default function App() {
         )}
 
         {/* Filter Tabs */}
-        <div className="max-w-7xl mx-auto mt-6 flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
+        <div className="max-w-7xl mx-auto mt-6 flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 px-6">
           {[
-            { id: 'all', label: 'All Media' },
-            { id: 'photo', label: 'Photos' },
-            { id: 'video', label: 'Videos' },
-            { id: 'favorites', label: 'Favorites' }
+            { id: 'all', label: T.all },
+            { id: 'photo', label: T.photos },
+            { id: 'video', label: T.videos },
+            { id: 'favorites', label: T.favorites }
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveFilter(tab.id as any)}
               className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-2 ${
                 activeFilter === tab.id 
-                ? 'bg-black text-white shadow-lg scale-105' 
-                : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                ? (theme === 'dark' ? 'bg-white text-black shadow-[0_0_20px_white/10]' : 'bg-black text-white shadow-lg') + ' scale-105' 
+                : (theme === 'dark' ? 'bg-white/5 text-gray-500 hover:text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200')
               }`}
             >
-              {tab.id === 'favorites' && <Heart size={12} fill={activeFilter === 'favorites' ? "white" : "none"} />}
               {tab.label}
             </button>
           ))}
@@ -643,7 +775,7 @@ export default function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ delay: index * 0.05 }}
-                className="group relative bg-white rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:shadow-[0_30px_60px_rgba(0,0,0,0.2)] transition-all duration-300 border border-gray-100"
+                className={`group relative ${theme === 'dark' ? 'bg-[#111]' : 'bg-white'} rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:shadow-[0_30px_60px_rgba(0,0,0,0.2)] transition-all duration-300 border ${theme === 'dark' ? 'border-white/5' : 'border-gray-100'}`}
               >
                 <div 
                   className="aspect-square overflow-hidden cursor-pointer relative"
@@ -680,16 +812,13 @@ export default function App() {
                   </div>
                 </div>
                 
-                <div className="p-4 bg-white">
+                <div className={`p-4 ${theme === 'dark' ? 'bg-[#111]' : 'bg-white'}`}>
                   <div className="flex items-center justify-between">
                     <div className="min-w-0">
-                      <h3 className="font-black text-sm text-gray-900 truncate tracking-tight">{photo.title}</h3>
+                      <h3 className={`font-black text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-900'} truncate tracking-tight uppercase italic`}>{photo.title}</h3>
                       <p className="text-[10px] font-bold text-gray-400 mt-0.5 uppercase tracking-wide">{photo.category}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="px-2 py-0.5 bg-gray-100 rounded text-[8px] font-black uppercase tracking-tighter text-gray-500">
-                        {photo.type}
-                      </div>
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
@@ -704,18 +833,9 @@ export default function App() {
                           e.stopPropagation();
                           handleDownload(photo);
                         }}
-                        className="text-gray-300 hover:text-black transition-colors"
+                        className="text-gray-300 hover:text-current transition-colors"
                       >
                         <Download className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleShareWhatsApp(photo.title);
-                        }}
-                        className="text-gray-300 hover:text-black transition-colors"
-                      >
-                        <Share2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -727,27 +847,27 @@ export default function App() {
 
         {filteredPhotos.length === 0 && (
           <div className="text-center py-24">
-            <p className="text-gray-400">No photos found matching your search.</p>
+            <h3 className={`text-xl font-black uppercase italic ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{T.noResults}</h3>
           </div>
         )}
       </main>
 
-      {/* Music Player Bar */}
+      {/* Floating Music Player Bar */}
       <motion.footer 
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-full md:max-w-xl bg-white/70 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 rounded-3xl px-4 py-3 z-20 flex items-center"
+        className={`fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-full md:max-w-xl ${theme === 'dark' ? 'bg-[#111]/80' : 'bg-white/80'} backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border ${theme === 'dark' ? 'border-white/10' : 'border-white/50'} rounded-3xl px-4 py-3 z-20 flex items-center`}
       >
         <div className="w-full flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 flex-[2.5] md:flex-[1.5] min-w-0">
             <motion.div 
               animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
               transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              className={`w-14 h-14 bg-black rounded-full flex-shrink-0 flex items-center justify-center shadow-lg border-4 border-gray-900 relative overflow-hidden`}
+              className={`w-14 h-14 ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'} rounded-full flex-shrink-0 flex items-center justify-center shadow-lg border-4 ${theme === 'dark' ? 'border-white/10' : 'border-gray-900'} relative overflow-hidden`}
             >
               {/* Vinyl lines */}
               <div className="absolute inset-0 rounded-full opacity-20 bg-[repeating-radial-gradient(circle,transparent,transparent_2px,#fff_3px)]" />
-              <div className="w-4 h-4 bg-gray-800 rounded-full z-10 border border-gray-700 flex items-center justify-center">
+              <div className={`w-4 h-4 ${theme === 'dark' ? 'bg-black' : 'bg-gray-800'} rounded-full z-10 border border-gray-700 flex items-center justify-center`}>
                 <div className="w-1.5 h-1.5 bg-gray-500 rounded-full" />
               </div>
             </motion.div>
@@ -760,36 +880,36 @@ export default function App() {
                         key={i}
                         animate={{ height: ['40%', '100%', '40%'] }}
                         transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.2 }}
-                        className="w-0.5 bg-blue-500 rounded-full"
+                        className={`w-0.5 ${theme === 'dark' ? 'bg-blue-400' : 'bg-blue-500'} rounded-full`}
                       />
                     ))}
                   </div>
                 )}
                 <div className="whitespace-nowrap overflow-hidden mask-fade">
                   <div className="whitespace-nowrap inline-block animate-marquee">
-                    <span className="text-sm font-bold text-gray-900 pr-12">Taylor Swift - The Fate Of Ophelia</span>
-                    <span className="text-sm font-bold text-gray-900 pr-12">Taylor Swift - The Fate Of Ophelia</span>
+                    <span className={`text-sm font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} pr-12`}>Taylor Swift - The Fate Of Ophelia</span>
+                    <span className={`text-sm font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} pr-12`}>Taylor Swift - The Fate Of Ophelia</span>
                   </div>
                 </div>
               </div>
-              <p className="text-[9px] uppercase tracking-[0.2em] text-blue-500 font-black">Playing Now</p>
+              <p className={`text-[9px] uppercase tracking-[0.2em] ${theme === 'dark' ? 'text-blue-400' : 'text-blue-500'} font-black`}>{T.nowPlaying}</p>
             </div>
           </div>
 
           <div className="flex flex-col items-center gap-2 flex-1 hidden md:flex">
             <div className="flex items-center gap-6">
-              <button className="text-gray-400 hover:text-black transition-colors"><SkipBack size={20} /></button>
+              <button className="text-gray-400 hover:text-current transition-colors"><SkipBack size={20} /></button>
               <button 
                 onClick={togglePlay}
-                className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform"
+                className={`w-10 h-10 ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'} rounded-full flex items-center justify-center hover:scale-105 transition-transform`}
               >
                 {isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
               </button>
-              <button className="text-gray-400 hover:text-black transition-colors"><SkipForward size={20} /></button>
+              <button className="text-gray-400 hover:text-current transition-colors"><SkipForward size={20} /></button>
             </div>
-            <div className="w-full max-w-sm h-1 bg-gray-100 rounded-full overflow-hidden">
+            <div className={`w-full max-w-sm h-1 ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-100'} rounded-full overflow-hidden`}>
               <motion.div 
-                className="h-full bg-black"
+                className={`h-full ${theme === 'dark' ? 'bg-white' : 'bg-black'}`}
                 animate={{ width: isPlaying ? '100%' : '20%' }}
                 transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
               />
@@ -804,8 +924,8 @@ export default function App() {
               <Heart size={20} fill={activeFilter === 'favorites' ? "currentColor" : "none"} />
             </button>
             <button 
-              onClick={() => handleShareWhatsApp("My Favorite Memories")}
-              className="text-gray-400 hover:text-black transition-colors"
+              onClick={() => handleShare(selectedPhoto || PHOTO_DATA[0])}
+              className="text-gray-400 hover:text-current transition-colors"
             >
               <Share2 size={20} />
             </button>
@@ -880,7 +1000,6 @@ export default function App() {
                     autoPlay
                     loop={false}
                     onPlay={() => audioRef.current?.pause()}
-                    onPause={() => isPlaying && audioRef.current?.play()}
                     onEnded={handleVideoEnd}
                     controls
                     playsInline
@@ -907,7 +1026,7 @@ export default function App() {
                   className="px-8 md:px-10 py-3 md:py-4 bg-white text-black hover:bg-gray-100 transition-all rounded-2xl flex items-center gap-3 text-xs font-black shadow-2xl active:scale-95 group"
                 >
                   <Download size={18} strokeWidth={3} className="group-hover:-translate-y-1 transition-transform" /> 
-                  SAVE MEDIA
+                  {T.save}
                 </button>
                 <button 
                   onClick={() => toggleLike(selectedPhoto.id)}
@@ -922,7 +1041,7 @@ export default function App() {
                   />
                 </button>
                 <button 
-                  onClick={() => handleShareWhatsApp(selectedPhoto.title)}
+                  onClick={() => handleShare(selectedPhoto)}
                   className="w-12 h-12 bg-white/10 hover:bg-white/20 transition-all rounded-2xl flex items-center justify-center border border-white/10 group"
                 >
                   <Share2 size={20} className="text-white group-hover:scale-110 transition-transform" />
