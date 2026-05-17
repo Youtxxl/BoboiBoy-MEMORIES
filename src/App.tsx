@@ -20,34 +20,34 @@ import {
 } from 'lucide-react';
 
 const PHOTOS = [
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619885/foto1_i3ftiq.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619886/foto2_zw5y2d.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619897/foto3_lb3fhr.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619914/foto4_nsx0sm.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619929/foto5_nvduvv.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619936/foto7_wubv4o.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619937/foto8_sntkaq.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619897/foto28_tp9i71.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto11_hl6mqd.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto12_yrhhkp.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto13_p7kydj.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto15_w3xsnm.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619887/foto19_zn9oxc.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619913/foto38_qngn3j.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619915/foto41_phzjde.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619920/foto42_la9qwp.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619921/foto43_kcfq2e.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619923/foto46_jvrx6b.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619924/foto47_dbkpqz.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619930/foto52_cvenmq.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619908/foto34_errnoe.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619908/foto35_nfvzkq.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619909/foto36_ncdamp.jpg",
-  "https://res.cloudinary.com/dlzivwcxc/image/upload/v1778619884/foto10_j7kkzs.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619885/foto1_i3ftiq.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619886/foto2_zw5y2d.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619897/foto3_lb3fhr.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619914/foto4_nsx0sm.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619929/foto5_nvduvv.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619936/foto7_wubv4o.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619937/foto8_sntkaq.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619897/foto28_tp9i71.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto11_hl6mqd.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto12_yrhhkp.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto13_p7kydj.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto15_w3xsnm.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619887/foto19_zn9oxc.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619913/foto38_qngn3j.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619915/foto41_phzjde.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619920/foto42_la9qwp.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619921/foto43_kcfq2e.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619923/foto46_jvrx6b.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619924/foto47_dbkpqz.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619930/foto52_cvenmq.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619908/foto34_errnoe.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619908/foto35_nfvzkq.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619909/foto36_ncdamp.jpg",
+  "https://res.cloudinary.com/dlzivwcxc/image/upload/f_auto,q_auto,w_1280/v1778619884/foto10_j7kkzs.jpg",
 ];
 
 const VIDEOS = [
-  "https://res.cloudinary.com/dlzivwcxc/video/upload/v1778620808/bg_ourtb1.mp4"
+  "https://res.cloudinary.com/dlzivwcxc/video/upload/f_auto,q_auto/v1778620808/bg_ourtb1.mp4"
 ];
 
 const SONG_URL = "https://res.cloudinary.com/dlzivwcxc/video/upload/v1778621312/lagu3_szjdw0.mp3";
@@ -74,7 +74,7 @@ const PHOTO_DATA = [
       title: getTitleFromUrl(url),
       rawName,
       type: 'photo' as const,
-      category: index % 2 === 0 ? 'Vacation' : 'Moments',
+      category: index % 3 === 0 ? 'Vacation' : (index % 3 === 1 ? 'Adventures' : 'Moments'),
       date: new Date(2025, 0, index + 1).toISOString()
     };
   }),
@@ -82,14 +82,19 @@ const PHOTO_DATA = [
     return {
       id: PHOTOS.length + index,
       url,
-      title: "BoboiBoy Video " + (index + 1),
+      title: "Boiboy Moment " + (index + 1),
       rawName: "video" + (index + 1),
       type: 'video' as const,
-      category: 'Moments',
-      date: new Date(2025, 1, index + 1).toISOString()
+      category: index % 2 === 0 ? 'Moments' : 'Adventures',
+      date: new Date(2025, 0, PHOTOS.length + index + 1).toISOString()
     };
   })
-];
+].sort((a, b) => {
+  // We want a stable but mixed order
+  const hashA = a.id * 1.618 % 1;
+  const hashB = b.id * 1.618 % 1;
+  return hashA - hashB;
+});
 
 const T = {
   all: "All Media",
@@ -119,6 +124,76 @@ const T = {
   noResults: "No media found",
   nowPlaying: "Playing Now",
   save: "SAVE MEDIA"
+};
+
+const VideoGridThumbnail = ({ photo, theme }: { photo: any, theme: 'dark' | 'light' }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startHover = () => {
+    setShowOverlay(true);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setShowOverlay(false);
+    }, 1000);
+    
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+      setIsPlaying(true);
+    }
+  };
+
+  const endHover = () => {
+    setShowOverlay(false);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+      setIsPlaying(false);
+    }
+  };
+
+  return (
+    <div 
+      className={`${theme === 'dark' ? 'bg-zinc-900' : 'bg-gray-100'} w-full h-full flex items-center justify-center relative overflow-hidden`}
+      onMouseEnter={startHover}
+      onMouseLeave={endHover}
+    >
+      <video 
+        ref={videoRef}
+        src={photo.url} 
+        className={`w-full h-full object-cover transition-all duration-700 ${isPlaying ? 'scale-110 opacity-100' : 'scale-100 opacity-60'}`}
+        muted
+        loop
+        playsInline
+      />
+      <AnimatePresence>
+        {showOverlay && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.5, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: -10 }}
+            className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
+          >
+            <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-2xl">
+              {isPlaying ? (
+                <Pause className="text-white/90 w-5 h-5 fill-white/90" />
+              ) : (
+                <Play className="text-white/90 w-5 h-5 fill-white/90 ml-0.5" />
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {!isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+           <Play className="text-white/40 w-10 h-10 transition-opacity duration-300" />
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default function App() {
@@ -415,38 +490,36 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Background Particles - High Density & Dynamic Visibility */}
+      {/* Background Particles - Optimized for Mobile Performance */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {[...Array(100)].map((_, i) => (
+        {[...Array(25)].map((_, i) => (
           <motion.div
             key={i}
             initial={{ 
               x: Math.random() * 100 + "%", 
               y: Math.random() * 100 + "%",
-              opacity: Math.random() * 0.3 + 0.1,
-              scale: Math.random() * 1.2 + 0.5
+              opacity: Math.random() * 0.2 + 0.05,
+              scale: Math.random() * 1 + 0.5
             }}
             animate={{
               x: [
-                (Math.random() * 120 - 10) + "%",
-                (Math.random() * 120 - 10) + "%",
-                (Math.random() * 120 - 10) + "%"
+                (Math.random() * 100) + "%",
+                (Math.random() * 100) + "%",
               ],
               y: [
-                (Math.random() * 120 - 10) + "%",
-                (Math.random() * 120 - 10) + "%",
-                (Math.random() * 120 - 10) + "%"
+                (Math.random() * 100) + "%",
+                (Math.random() * 100) + "%",
               ],
-              opacity: [0.1, 0.5, 0.1],
-              scale: [1, 1.5, 1]
+              opacity: [0.05, 0.2, 0.05],
             }}
             transition={{
-              duration: 5 + Math.random() * 10,
+              duration: 15 + Math.random() * 20,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: "linear"
             }}
-            className={`absolute w-[4px] h-[4px] rounded-full blur-[0.5px] ${
-              i % 5 === 0 ? 'bg-blue-400/60 shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'bg-black/30'
+            style={{ willChange: 'transform, opacity' }}
+            className={`absolute w-[3px] h-[3px] rounded-full ${
+              i % 5 === 0 ? 'bg-blue-500/30 shadow-[0_0_8px_rgba(59,130,246,0.2)]' : (theme === 'dark' ? 'bg-white/5' : 'bg-black/5')
             }`}
           />
         ))}
@@ -602,7 +675,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Header */}
-      <header className={`sticky top-0 z-50 transition-colors duration-500 ${theme === 'dark' ? 'bg-[#050505]/80' : 'bg-white/80'} backdrop-blur-md border-b ${theme === 'dark' ? 'border-white/5' : 'border-gray-100'} px-6 py-4`}>
+      <header className={`sticky top-0 z-50 transition-colors duration-500 ${theme === 'dark' ? 'bg-[#050505]/70' : 'bg-white/70'} backdrop-blur-lg border-b ${theme === 'dark' ? 'border-white/5' : 'border-gray-100'} px-6 py-4`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className={`w-10 h-10 ${theme === 'dark' ? 'bg-white' : 'bg-black'} rounded-2xl flex items-center justify-center shadow-lg`}>
@@ -762,20 +835,16 @@ export default function App() {
 
       {/* Grid */}
       <main className="max-w-7xl mx-auto px-6 py-12">
-        <motion.div 
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-        >
-          <AnimatePresence mode="popLayout">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <AnimatePresence initial={false}>
             {filteredPhotos.map((photo, index) => (
               <motion.div
                 key={photo.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ delay: index * 0.05 }}
-                className={`group relative ${theme === 'dark' ? 'bg-[#111]' : 'bg-white'} rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:shadow-[0_30px_60px_rgba(0,0,0,0.2)] transition-all duration-300 border ${theme === 'dark' ? 'border-white/5' : 'border-gray-100'}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className={`group relative ${theme === 'dark' ? 'bg-[#111]' : 'bg-white'} rounded-2xl overflow-hidden shadow-lg border ${theme === 'dark' ? 'border-white/5' : 'border-gray-100'}`}
               >
                 <div 
                   className="aspect-square overflow-hidden cursor-pointer relative"
@@ -785,27 +854,16 @@ export default function App() {
                     <motion.img 
                       src={photo.url} 
                       alt={photo.title}
+                      loading="lazy"
                       animate={{ 
-                        filter: loadingId === photo.id ? 'blur(12px)' : 'blur(0px)',
-                        scale: loadingId === photo.id ? 0.95 : 1
+                        filter: loadingId === photo.id ? 'blur(8px)' : 'blur(0px)',
+                        scale: loadingId === photo.id ? 0.98 : 1
                       }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gray-900 flex items-center justify-center relative">
-                      <video 
-                        src={photo.url} 
-                        className="w-full h-full object-cover opacity-60"
-                        muted
-                        playsInline
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
-                          <Play className="text-white w-6 h-6 fill-white" />
-                        </div>
-                      </div>
-                    </div>
+                    <VideoGridThumbnail photo={photo} theme={theme} />
                   )}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <Maximize2 className="text-white w-8 h-8" />
@@ -843,7 +901,7 @@ export default function App() {
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
         {filteredPhotos.length === 0 && (
           <div className="text-center py-24">
@@ -856,7 +914,7 @@ export default function App() {
       <motion.footer 
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className={`fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-full md:max-w-xl ${theme === 'dark' ? 'bg-[#111]/80' : 'bg-white/80'} backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border ${theme === 'dark' ? 'border-white/10' : 'border-white/50'} rounded-3xl px-4 py-3 z-20 flex items-center`}
+        className={`fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-full md:max-w-xl ${theme === 'dark' ? 'bg-[#111]/90' : 'bg-white/90'} backdrop-blur-lg shadow-[0_20px_50px_rgba(0,0,0,0.1)] border ${theme === 'dark' ? 'border-white/10' : 'border-white/50'} rounded-3xl px-4 py-3 z-20 flex items-center`}
       >
         <div className="w-full flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 flex-[2.5] md:flex-[1.5] min-w-0">
@@ -942,11 +1000,12 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[60] flex flex-col bg-black overflow-hidden"
           >
-            {/* Ambient Background Glow (Gives the bars something to blur) */}
-            <div className="absolute inset-0 opacity-30 pointer-events-none">
+            {/* Ambient Background Glow (Simplified for performance) */}
+            <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
               <motion.img 
                 src={selectedPhoto.url} 
-                className="w-full h-full object-cover blur-[100px] scale-150"
+                className="w-full h-full object-cover blur-[60px]"
+                style={{ transform: 'scale(1.2)' }}
                 referrerPolicy="no-referrer"
               />
             </div>
@@ -996,9 +1055,8 @@ export default function App() {
                   <motion.video 
                     layoutId={selectedPhoto.id.toString()}
                     src={selectedPhoto.url} 
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    loop={false}
+                    className="w-full h-full object-contain bg-black"
+                    preload="auto"
                     onPlay={() => audioRef.current?.pause()}
                     onEnded={handleVideoEnd}
                     controls
